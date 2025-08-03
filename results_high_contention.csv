@@ -1,0 +1,25 @@
+"Benchmark","Mode","Threads","Samples","Score","Score Error (99.9%)","Unit","Param: threadCount","Param: upper"
+"com.jake.sharedmemory.TotientSumBenchmark.testAtomicLongHighContention","thrpt",1,25,115.626405,0.631626,"ops/s",2,1000
+"com.jake.sharedmemory.TotientSumBenchmark.testAtomicLongHighContention","thrpt",1,25,3.869151,0.020945,"ops/s",2,5000
+"com.jake.sharedmemory.TotientSumBenchmark.testAtomicLongHighContention","thrpt",1,25,0.896548,0.004735,"ops/s",2,10000
+"com.jake.sharedmemory.TotientSumBenchmark.testAtomicLongHighContention","thrpt",1,25,183.295904,1.212670,"ops/s",4,1000
+"com.jake.sharedmemory.TotientSumBenchmark.testAtomicLongHighContention","thrpt",1,25,6.501185,0.012560,"ops/s",4,5000
+"com.jake.sharedmemory.TotientSumBenchmark.testAtomicLongHighContention","thrpt",1,25,1.505154,0.004995,"ops/s",4,10000
+"com.jake.sharedmemory.TotientSumBenchmark.testAtomicLongHighContention","thrpt",1,25,275.502489,4.331404,"ops/s",8,1000
+"com.jake.sharedmemory.TotientSumBenchmark.testAtomicLongHighContention","thrpt",1,25,11.210403,0.025689,"ops/s",8,5000
+"com.jake.sharedmemory.TotientSumBenchmark.testAtomicLongHighContention","thrpt",1,25,2.638769,0.006109,"ops/s",8,10000
+"com.jake.sharedmemory.TotientSumBenchmark.testAtomicLongHighContention","thrpt",1,25,299.639036,2.566786,"ops/s",16,1000
+"com.jake.sharedmemory.TotientSumBenchmark.testAtomicLongHighContention","thrpt",1,25,19.013839,0.055679,"ops/s",16,5000
+"com.jake.sharedmemory.TotientSumBenchmark.testAtomicLongHighContention","thrpt",1,25,4.660507,0.030610,"ops/s",16,10000
+"com.jake.sharedmemory.TotientSumBenchmark.testSynchronizedHighContention","thrpt",1,25,114.501300,0.352285,"ops/s",2,1000
+"com.jake.sharedmemory.TotientSumBenchmark.testSynchronizedHighContention","thrpt",1,25,3.867665,0.013590,"ops/s",2,5000
+"com.jake.sharedmemory.TotientSumBenchmark.testSynchronizedHighContention","thrpt",1,25,0.882385,0.019348,"ops/s",2,10000
+"com.jake.sharedmemory.TotientSumBenchmark.testSynchronizedHighContention","thrpt",1,25,179.946494,1.898608,"ops/s",4,1000
+"com.jake.sharedmemory.TotientSumBenchmark.testSynchronizedHighContention","thrpt",1,25,6.490265,0.039223,"ops/s",4,5000
+"com.jake.sharedmemory.TotientSumBenchmark.testSynchronizedHighContention","thrpt",1,25,1.498397,0.012294,"ops/s",4,10000
+"com.jake.sharedmemory.TotientSumBenchmark.testSynchronizedHighContention","thrpt",1,25,268.040444,6.135680,"ops/s",8,1000
+"com.jake.sharedmemory.TotientSumBenchmark.testSynchronizedHighContention","thrpt",1,25,10.993514,0.133492,"ops/s",8,5000
+"com.jake.sharedmemory.TotientSumBenchmark.testSynchronizedHighContention","thrpt",1,25,2.592106,0.050423,"ops/s",8,10000
+"com.jake.sharedmemory.TotientSumBenchmark.testSynchronizedHighContention","thrpt",1,25,300.142191,7.282306,"ops/s",16,1000
+"com.jake.sharedmemory.TotientSumBenchmark.testSynchronizedHighContention","thrpt",1,25,18.115968,0.417876,"ops/s",16,5000
+"com.jake.sharedmemory.TotientSumBenchmark.testSynchronizedHighContention","thrpt",1,25,4.493610,0.095394,"ops/s",16,10000
