@@ -3,148 +3,118 @@ package com.jake.sharedmemory;
 import org.openjdk.jmh.annotations.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.LongAdder;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * JMH benchmark comparing two shared-memory concurrency models:
+ * JMH benchmark comparing four shared-memory synchronization mechanisms:
  * - synchronized (intrinsic locking)
- * - AtomicLong (lock-free atomic operation)
+ * - ReentrantLock (explicit mutual exclusion lock)
+ * - AtomicLong (lock-free atomic operation via CAS)
+ * - LongAdder (striped counters that reduce contention at high concurrency)
  *
- * The benchmark computes the sum of Euler's totient function in a given range,
- * with the range partitioned across multiple threads.
+ * The benchmark computes the sum of Euler's totient function in a given range [1, upper],
+ * partitioned across a configurable number of worker threads (threadCount).
+ *
+ * NOTE: To keep results directly comparable with existing data, each benchmark method
+ * manually spawns 'threadCount' Java threads and aggregates partial sums via a pluggable
+ * Accumulator strategy. Returning the final sum avoids dead-code elimination.
  */
+@BenchmarkMode(Mode.Throughput)
+@OutputTimeUnit(TimeUnit.SECONDS)
+@Warmup(iterations = 5)
+@Measurement(iterations = 25)
+@Fork(2)
 @State(Scope.Benchmark)
 public class TotientSumBenchmark {
 
-    // Number of threads for parallel execution (JMH will test all values)
-    @Param({"2", "4", "8", "16"})
-    public int threadCount;
+    @Param({ "1000", "5000", "10000" })
+    int upper;
 
-    // Upper bound of the range (inclusive) for totient sum
-    @Param({"1000", "5000", "10000"})
-    public int upper;
+    @Param({ "1", "2", "4", "8", "16", "32" })
+    int threadCount;
 
     /**
-     * Benchmark using synchronized block to safely update a shared global sum.
+     * Launch 'threadCount' workers that each compute totients for a chunk
+     * and apply the provided Accumulator to combine partial sums.
      */
-    @Benchmark
-    @BenchmarkMode(Mode.Throughput)
-    @OutputTimeUnit(TimeUnit.SECONDS)
-    public long testSynchronized() throws InterruptedException {
-        final Object lock = new Object();
-        final long[] globalSum = {0};
+    private void runWorkers(Accumulator acc) {
+        final int chunk = Math.max(upper / threadCount, 0);
         Thread[] threads = new Thread[threadCount];
-        int chunk = upper / threadCount;
-
-        // Create and start threads, each computing a segment of the range
-        for (int t = 0; t < threadCount; t++) {
-            int start = t * chunk + 1;
-            int end = (t == threadCount - 1) ? upper : (start + chunk - 1);
-            threads[t] = new Thread(() -> {
-                long localSum = 0;
-                for (int n = start; n <= end; n++) {
-                    localSum += Totient.euler(n);
-                }
-                // Synchronized update of shared sum
-                synchronized (lock) {
-                    globalSum[0] += localSum;
-                }
-            });
-        }
-
-        // Launch all threads
-        for (Thread thread : threads) thread.start();
-        // Wait for all threads to finish
-        for (Thread thread : threads) thread.join();
-
-        return globalSum[0];
-    }
-
-    /**
-     * Benchmark using AtomicLong to safely update a shared global sum.
-     */
-    @Benchmark
-    @BenchmarkMode(Mode.Throughput)
-    @OutputTimeUnit(TimeUnit.SECONDS)
-    public long testAtomicLong() throws InterruptedException {
-        final AtomicLong globalSum = new AtomicLong(0);
-        Thread[] threads = new Thread[threadCount];
-        int chunk = upper / threadCount;
-
-        // Create and start threads, each computing a segment of the range
-        for (int t = 0; t < threadCount; t++) {
-            int start = t * chunk + 1;
-            int end = (t == threadCount - 1) ? upper : (start + chunk - 1);
-            threads[t] = new Thread(() -> {
-                long localSum = 0;
-                for (int n = start; n <= end; n++) {
-                    localSum += Totient.euler(n);
-                }
-                // Atomic update of shared sum
-                globalSum.addAndGet(localSum);
-            });
-        }
-
-        // Launch all threads
-        for (Thread thread : threads) thread.start();
-        // Wait for all threads to finish
-        for (Thread thread : threads) thread.join();
-
-        return globalSum.get();
-    }
-    /**
-     * High-contention version using synchronized block.
-     * Each thread updates the shared global sum after every single totient calculation.
-     */
-    @Benchmark
-    @BenchmarkMode(Mode.Throughput)
-    @OutputTimeUnit(TimeUnit.SECONDS)
-    public long testSynchronizedHighContention() throws InterruptedException {
-        final Object lock = new Object();
-        final long[] globalSum = {0};
-        Thread[] threads = new Thread[threadCount];
-        int chunk = upper / threadCount;
 
         for (int t = 0; t < threadCount; t++) {
-            int start = t * chunk + 1;
-            int end = (t == threadCount - 1) ? upper : (start + chunk - 1);
+            final int start = t * chunk + 1;
+            final int end = (t == threadCount - 1) ? upper : (start + chunk - 1);
+
             threads[t] = new Thread(() -> {
-                for (int n = start; n <= end; n++) {
-                    long value = Totient.euler(n);
-                    synchronized (lock) {
-                        globalSum[0] += value;
+                long local = 0L;
+                if (start <= end) {
+                    for (int n = start; n <= end; n++) {
+                        local += Totient.euler(n);
                     }
                 }
+                acc.add(local);
             });
         }
-        for (Thread thread : threads) thread.start();
-        for (Thread thread : threads) thread.join();
-        return globalSum[0];
+
+        for (Thread th : threads) th.start();
+        for (Thread th : threads) {
+            try {
+                th.join();
+            } catch (InterruptedException ie) {
+                Thread.currentThread().interrupt();
+            }
+        }
     }
 
-    /**
-     * High-contention version using AtomicLong.
-     * Each thread updates the shared global sum after every single totient calculation.
-     */
+    // --- Variant 1: synchronized ---
     @Benchmark
-    @BenchmarkMode(Mode.Throughput)
-    @OutputTimeUnit(TimeUnit.SECONDS)
-    public long testAtomicLongHighContention() throws InterruptedException {
-        final java.util.concurrent.atomic.AtomicLong globalSum = new java.util.concurrent.atomic.AtomicLong(0);
-        Thread[] threads = new Thread[threadCount];
-        int chunk = upper / threadCount;
+    public long testSynchronized() {
+        final Object lock = new Object();
+        final long[] sum = new long[1];
+        runWorkers(delta -> {
+            synchronized (lock) {
+                sum[0] += delta;
+            }
+        });
+        return sum[0];
+    }
 
-        for (int t = 0; t < threadCount; t++) {
-            int start = t * chunk + 1;
-            int end = (t == threadCount - 1) ? upper : (start + chunk - 1);
-            threads[t] = new Thread(() -> {
-                for (int n = start; n <= end; n++) {
-                    long value = Totient.euler(n);
-                    globalSum.addAndGet(value);
-                }
-            });
-        }
-        for (Thread thread : threads) thread.start();
-        for (Thread thread : threads) thread.join();
-        return globalSum.get();
+    // --- Variant 2: ReentrantLock ---
+    @Benchmark
+    public long testReentrantLock() {
+        final ReentrantLock lock = new ReentrantLock(); // non-fair
+        final long[] sum = new long[1];
+        runWorkers(delta -> {
+            lock.lock();
+            try {
+                sum[0] += delta;
+            } finally {
+                lock.unlock();
+            }
+        });
+        return sum[0];
+    }
+
+    // --- Variant 3: AtomicLong ---
+    @Benchmark
+    public long testAtomicLong() {
+        final AtomicLong sum = new AtomicLong(0L);
+        runWorkers(sum::addAndGet);
+        return sum.get();
+    }
+
+    // --- Variant 4: LongAdder ---
+    @Benchmark
+    public long testLongAdder() {
+        final LongAdder adder = new LongAdder();
+        runWorkers(adder::add);
+        return adder.sum();
+    }
+
+    // Functional interface to pass accumulation strategy
+    @FunctionalInterface
+    private interface Accumulator {
+        void add(long delta);
     }
 }

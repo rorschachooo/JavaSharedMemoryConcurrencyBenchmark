@@ -4,6 +4,6 @@ dontinline,*.*_sample_jmhStub
 dontinline,*.*_ss_jmhStub
 dontinline,*.*_thrpt_jmhStub
 inline,com/jake/sharedmemory/TotientSumBenchmark.testAtomicLong
-inline,com/jake/sharedmemory/TotientSumBenchmark.testAtomicLongHighContention
+inline,com/jake/sharedmemory/TotientSumBenchmark.testLongAdder
+inline,com/jake/sharedmemory/TotientSumBenchmark.testReentrantLock
 inline,com/jake/sharedmemory/TotientSumBenchmark.testSynchronized
-inline,com/jake/sharedmemory/TotientSumBenchmark.testSynchronizedHighContention

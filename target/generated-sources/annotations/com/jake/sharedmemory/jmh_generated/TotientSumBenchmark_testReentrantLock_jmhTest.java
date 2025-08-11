@@ -33,7 +33,7 @@ import org.openjdk.jmh.results.AggregationPolicy;
 import org.openjdk.jmh.runner.FailureAssistException;
 
 import com.jake.sharedmemory.jmh_generated.TotientSumBenchmark_jmhType;
-public final class TotientSumBenchmark_testSynchronizedHighContention_jmhTest {
+public final class TotientSumBenchmark_testReentrantLock_jmhTest {
 
     byte p000, p001, p002, p003, p004, p005, p006, p007, p008, p009, p010, p011, p012, p013, p014, p015;
     byte p016, p017, p018, p019, p020, p021, p022, p023, p024, p025, p026, p027, p028, p029, p030, p031;
@@ -58,7 +58,7 @@ public final class TotientSumBenchmark_testSynchronizedHighContention_jmhTest {
     Blackhole blackhole;
     Control notifyControl;
 
-    public BenchmarkTaskResult testSynchronizedHighContention_Throughput(InfraControl control, ThreadParams threadParams) throws Throwable {
+    public BenchmarkTaskResult testReentrantLock_Throughput(InfraControl control, ThreadParams threadParams) throws Throwable {
         this.benchmarkParams = control.benchmarkParams;
         this.iterationParams = control.iterationParams;
         this.threadParams    = threadParams;
@@ -75,18 +75,18 @@ public final class TotientSumBenchmark_testSynchronizedHighContention_jmhTest {
 
             control.announceWarmupReady();
             while (control.warmupShouldWait) {
-                blackhole.consume(l_totientsumbenchmark0_G.testSynchronizedHighContention());
+                blackhole.consume(l_totientsumbenchmark0_G.testReentrantLock());
                 if (control.shouldYield) Thread.yield();
                 res.allOps++;
             }
 
             notifyControl.startMeasurement = true;
-            testSynchronizedHighContention_thrpt_jmhStub(control, res, benchmarkParams, iterationParams, threadParams, blackhole, notifyControl, startRndMask, l_totientsumbenchmark0_G);
+            testReentrantLock_thrpt_jmhStub(control, res, benchmarkParams, iterationParams, threadParams, blackhole, notifyControl, startRndMask, l_totientsumbenchmark0_G);
             notifyControl.stopMeasurement = true;
             control.announceWarmdownReady();
             try {
                 while (control.warmdownShouldWait) {
-                    blackhole.consume(l_totientsumbenchmark0_G.testSynchronizedHighContention());
+                    blackhole.consume(l_totientsumbenchmark0_G.testReentrantLock());
                     if (control.shouldYield) Thread.yield();
                     res.allOps++;
                 }
@@ -108,19 +108,19 @@ public final class TotientSumBenchmark_testSynchronizedHighContention_jmhTest {
             res.measuredOps *= opsPerInv;
             res.measuredOps /= batchSize;
             BenchmarkTaskResult results = new BenchmarkTaskResult((long)res.allOps, (long)res.measuredOps);
-            results.add(new ThroughputResult(ResultRole.PRIMARY, "testSynchronizedHighContention", res.measuredOps, res.getTime(), benchmarkParams.getTimeUnit()));
+            results.add(new ThroughputResult(ResultRole.PRIMARY, "testReentrantLock", res.measuredOps, res.getTime(), benchmarkParams.getTimeUnit()));
             this.blackhole.evaporate("Yes, I am Stephen Hawking, and know a thing or two about black holes.");
             return results;
         } else
             throw new IllegalStateException("Harness failed to distribute threads among groups properly");
     }
 
-    public static void testSynchronizedHighContention_thrpt_jmhStub(InfraControl control, RawResults result, BenchmarkParams benchmarkParams, IterationParams iterationParams, ThreadParams threadParams, Blackhole blackhole, Control notifyControl, int startRndMask, TotientSumBenchmark_jmhType l_totientsumbenchmark0_G) throws Throwable {
+    public static void testReentrantLock_thrpt_jmhStub(InfraControl control, RawResults result, BenchmarkParams benchmarkParams, IterationParams iterationParams, ThreadParams threadParams, Blackhole blackhole, Control notifyControl, int startRndMask, TotientSumBenchmark_jmhType l_totientsumbenchmark0_G) throws Throwable {
         long operations = 0;
         long realTime = 0;
         result.startTime = System.nanoTime();
         do {
-            blackhole.consume(l_totientsumbenchmark0_G.testSynchronizedHighContention());
+            blackhole.consume(l_totientsumbenchmark0_G.testReentrantLock());
             operations++;
         } while(!control.isDone);
         result.stopTime = System.nanoTime();
@@ -129,7 +129,7 @@ public final class TotientSumBenchmark_testSynchronizedHighContention_jmhTest {
     }
 
 
-    public BenchmarkTaskResult testSynchronizedHighContention_AverageTime(InfraControl control, ThreadParams threadParams) throws Throwable {
+    public BenchmarkTaskResult testReentrantLock_AverageTime(InfraControl control, ThreadParams threadParams) throws Throwable {
         this.benchmarkParams = control.benchmarkParams;
         this.iterationParams = control.iterationParams;
         this.threadParams    = threadParams;
@@ -146,18 +146,18 @@ public final class TotientSumBenchmark_testSynchronizedHighContention_jmhTest {
 
             control.announceWarmupReady();
             while (control.warmupShouldWait) {
-                blackhole.consume(l_totientsumbenchmark0_G.testSynchronizedHighContention());
+                blackhole.consume(l_totientsumbenchmark0_G.testReentrantLock());
                 if (control.shouldYield) Thread.yield();
                 res.allOps++;
             }
 
             notifyControl.startMeasurement = true;
-            testSynchronizedHighContention_avgt_jmhStub(control, res, benchmarkParams, iterationParams, threadParams, blackhole, notifyControl, startRndMask, l_totientsumbenchmark0_G);
+            testReentrantLock_avgt_jmhStub(control, res, benchmarkParams, iterationParams, threadParams, blackhole, notifyControl, startRndMask, l_totientsumbenchmark0_G);
             notifyControl.stopMeasurement = true;
             control.announceWarmdownReady();
             try {
                 while (control.warmdownShouldWait) {
-                    blackhole.consume(l_totientsumbenchmark0_G.testSynchronizedHighContention());
+                    blackhole.consume(l_totientsumbenchmark0_G.testReentrantLock());
                     if (control.shouldYield) Thread.yield();
                     res.allOps++;
                 }
@@ -179,19 +179,19 @@ public final class TotientSumBenchmark_testSynchronizedHighContention_jmhTest {
             res.measuredOps *= opsPerInv;
             res.measuredOps /= batchSize;
             BenchmarkTaskResult results = new BenchmarkTaskResult((long)res.allOps, (long)res.measuredOps);
-            results.add(new AverageTimeResult(ResultRole.PRIMARY, "testSynchronizedHighContention", res.measuredOps, res.getTime(), benchmarkParams.getTimeUnit()));
+            results.add(new AverageTimeResult(ResultRole.PRIMARY, "testReentrantLock", res.measuredOps, res.getTime(), benchmarkParams.getTimeUnit()));
             this.blackhole.evaporate("Yes, I am Stephen Hawking, and know a thing or two about black holes.");
             return results;
         } else
             throw new IllegalStateException("Harness failed to distribute threads among groups properly");
     }
 
-    public static void testSynchronizedHighContention_avgt_jmhStub(InfraControl control, RawResults result, BenchmarkParams benchmarkParams, IterationParams iterationParams, ThreadParams threadParams, Blackhole blackhole, Control notifyControl, int startRndMask, TotientSumBenchmark_jmhType l_totientsumbenchmark0_G) throws Throwable {
+    public static void testReentrantLock_avgt_jmhStub(InfraControl control, RawResults result, BenchmarkParams benchmarkParams, IterationParams iterationParams, ThreadParams threadParams, Blackhole blackhole, Control notifyControl, int startRndMask, TotientSumBenchmark_jmhType l_totientsumbenchmark0_G) throws Throwable {
         long operations = 0;
         long realTime = 0;
         result.startTime = System.nanoTime();
         do {
-            blackhole.consume(l_totientsumbenchmark0_G.testSynchronizedHighContention());
+            blackhole.consume(l_totientsumbenchmark0_G.testReentrantLock());
             operations++;
         } while(!control.isDone);
         result.stopTime = System.nanoTime();
@@ -200,7 +200,7 @@ public final class TotientSumBenchmark_testSynchronizedHighContention_jmhTest {
     }
 
 
-    public BenchmarkTaskResult testSynchronizedHighContention_SampleTime(InfraControl control, ThreadParams threadParams) throws Throwable {
+    public BenchmarkTaskResult testReentrantLock_SampleTime(InfraControl control, ThreadParams threadParams) throws Throwable {
         this.benchmarkParams = control.benchmarkParams;
         this.iterationParams = control.iterationParams;
         this.threadParams    = threadParams;
@@ -217,7 +217,7 @@ public final class TotientSumBenchmark_testSynchronizedHighContention_jmhTest {
 
             control.announceWarmupReady();
             while (control.warmupShouldWait) {
-                blackhole.consume(l_totientsumbenchmark0_G.testSynchronizedHighContention());
+                blackhole.consume(l_totientsumbenchmark0_G.testReentrantLock());
                 if (control.shouldYield) Thread.yield();
                 res.allOps++;
             }
@@ -227,12 +227,12 @@ public final class TotientSumBenchmark_testSynchronizedHighContention_jmhTest {
             int batchSize = iterationParams.getBatchSize();
             int opsPerInv = benchmarkParams.getOpsPerInvocation();
             SampleBuffer buffer = new SampleBuffer();
-            testSynchronizedHighContention_sample_jmhStub(control, res, benchmarkParams, iterationParams, threadParams, blackhole, notifyControl, startRndMask, buffer, targetSamples, opsPerInv, batchSize, l_totientsumbenchmark0_G);
+            testReentrantLock_sample_jmhStub(control, res, benchmarkParams, iterationParams, threadParams, blackhole, notifyControl, startRndMask, buffer, targetSamples, opsPerInv, batchSize, l_totientsumbenchmark0_G);
             notifyControl.stopMeasurement = true;
             control.announceWarmdownReady();
             try {
                 while (control.warmdownShouldWait) {
-                    blackhole.consume(l_totientsumbenchmark0_G.testSynchronizedHighContention());
+                    blackhole.consume(l_totientsumbenchmark0_G.testReentrantLock());
                     if (control.shouldYield) Thread.yield();
                     res.allOps++;
                 }
@@ -251,14 +251,14 @@ public final class TotientSumBenchmark_testSynchronizedHighContention_jmhTest {
             res.allOps /= batchSize;
             res.measuredOps *= opsPerInv;
             BenchmarkTaskResult results = new BenchmarkTaskResult((long)res.allOps, (long)res.measuredOps);
-            results.add(new SampleTimeResult(ResultRole.PRIMARY, "testSynchronizedHighContention", buffer, benchmarkParams.getTimeUnit()));
+            results.add(new SampleTimeResult(ResultRole.PRIMARY, "testReentrantLock", buffer, benchmarkParams.getTimeUnit()));
             this.blackhole.evaporate("Yes, I am Stephen Hawking, and know a thing or two about black holes.");
             return results;
         } else
             throw new IllegalStateException("Harness failed to distribute threads among groups properly");
     }
 
-    public static void testSynchronizedHighContention_sample_jmhStub(InfraControl control, RawResults result, BenchmarkParams benchmarkParams, IterationParams iterationParams, ThreadParams threadParams, Blackhole blackhole, Control notifyControl, int startRndMask, SampleBuffer buffer, int targetSamples, long opsPerInv, int batchSize, TotientSumBenchmark_jmhType l_totientsumbenchmark0_G) throws Throwable {
+    public static void testReentrantLock_sample_jmhStub(InfraControl control, RawResults result, BenchmarkParams benchmarkParams, IterationParams iterationParams, ThreadParams threadParams, Blackhole blackhole, Control notifyControl, int startRndMask, SampleBuffer buffer, int targetSamples, long opsPerInv, int batchSize, TotientSumBenchmark_jmhType l_totientsumbenchmark0_G) throws Throwable {
         long realTime = 0;
         long operations = 0;
         int rnd = (int)System.nanoTime();
@@ -273,7 +273,7 @@ public final class TotientSumBenchmark_testSynchronizedHighContention_jmhTest {
             }
             for (int b = 0; b < batchSize; b++) {
                 if (control.volatileSpoiler) return;
-                blackhole.consume(l_totientsumbenchmark0_G.testSynchronizedHighContention());
+                blackhole.consume(l_totientsumbenchmark0_G.testReentrantLock());
             }
             if (sample) {
                 buffer.add((System.nanoTime() - time) / opsPerInv);
@@ -291,7 +291,7 @@ public final class TotientSumBenchmark_testSynchronizedHighContention_jmhTest {
     }
 
 
-    public BenchmarkTaskResult testSynchronizedHighContention_SingleShotTime(InfraControl control, ThreadParams threadParams) throws Throwable {
+    public BenchmarkTaskResult testReentrantLock_SingleShotTime(InfraControl control, ThreadParams threadParams) throws Throwable {
         this.benchmarkParams = control.benchmarkParams;
         this.iterationParams = control.iterationParams;
         this.threadParams    = threadParams;
@@ -308,7 +308,7 @@ public final class TotientSumBenchmark_testSynchronizedHighContention_jmhTest {
             notifyControl.startMeasurement = true;
             RawResults res = new RawResults();
             int batchSize = iterationParams.getBatchSize();
-            testSynchronizedHighContention_ss_jmhStub(control, res, benchmarkParams, iterationParams, threadParams, blackhole, notifyControl, startRndMask, batchSize, l_totientsumbenchmark0_G);
+            testReentrantLock_ss_jmhStub(control, res, benchmarkParams, iterationParams, threadParams, blackhole, notifyControl, startRndMask, batchSize, l_totientsumbenchmark0_G);
             control.preTearDown();
 
             if (control.isLastIteration()) {
@@ -319,19 +319,19 @@ public final class TotientSumBenchmark_testSynchronizedHighContention_jmhTest {
             int opsPerInv = control.benchmarkParams.getOpsPerInvocation();
             long totalOps = opsPerInv;
             BenchmarkTaskResult results = new BenchmarkTaskResult(totalOps, totalOps);
-            results.add(new SingleShotResult(ResultRole.PRIMARY, "testSynchronizedHighContention", res.getTime(), totalOps, benchmarkParams.getTimeUnit()));
+            results.add(new SingleShotResult(ResultRole.PRIMARY, "testReentrantLock", res.getTime(), totalOps, benchmarkParams.getTimeUnit()));
             this.blackhole.evaporate("Yes, I am Stephen Hawking, and know a thing or two about black holes.");
             return results;
         } else
             throw new IllegalStateException("Harness failed to distribute threads among groups properly");
     }
 
-    public static void testSynchronizedHighContention_ss_jmhStub(InfraControl control, RawResults result, BenchmarkParams benchmarkParams, IterationParams iterationParams, ThreadParams threadParams, Blackhole blackhole, Control notifyControl, int startRndMask, int batchSize, TotientSumBenchmark_jmhType l_totientsumbenchmark0_G) throws Throwable {
+    public static void testReentrantLock_ss_jmhStub(InfraControl control, RawResults result, BenchmarkParams benchmarkParams, IterationParams iterationParams, ThreadParams threadParams, Blackhole blackhole, Control notifyControl, int startRndMask, int batchSize, TotientSumBenchmark_jmhType l_totientsumbenchmark0_G) throws Throwable {
         long realTime = 0;
         result.startTime = System.nanoTime();
         for (int b = 0; b < batchSize; b++) {
             if (control.volatileSpoiler) return;
-            blackhole.consume(l_totientsumbenchmark0_G.testSynchronizedHighContention());
+            blackhole.consume(l_totientsumbenchmark0_G.testReentrantLock());
         }
         result.stopTime = System.nanoTime();
         result.realTime = realTime;

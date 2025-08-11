@@ -6,7 +6,7 @@ package com.jake.sharedmemory;
 public class Totient {
 
     /**
-     * Compute the greatest common divisor (GCD) of x and y using Euclidean algorithm.
+     * Compute the greatest common divisor (GCD) of x and y using the Euclidean algorithm.
      */
     public static long gcd(long x, long y) {
         while (y != 0) {
@@ -14,7 +14,7 @@ public class Totient {
             x = y;
             y = t;
         }
-        return x;
+        return Math.abs(x);
     }
 
     /**
