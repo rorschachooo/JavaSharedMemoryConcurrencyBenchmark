@@ -1,81 +1,62 @@
-# Java Shared-Memory Concurrency Benchmarks (JMH)
+# JavaSharedMemoryConcurrencyBenchmark
 
-This repository contains reproducible microbenchmarks (JMH) comparing four synchronization mechanisms for a shared counter in Java:
+CPU-bound shared-memory synchronization benchmarks using the sum of Euler’s totient over `[1..upper]`.
+We report two views: **Throughput (ops/s)** for small `upper` and **Runtime (ms/op)** for large `upper`.
 
-- **synchronized** (intrinsic monitor)
-- **ReentrantLock** (explicit mutex)
-- **AtomicLong** (lock-free CAS)
-- **LongAdder** (striped counter / sharded accumulator)
+## Environment (tested)
+- OS: Windows 11 24H2 (WSL2: Ubuntu 24.04.2 LTS)
+- JDK: OpenJDK 21.0.8+9 (HotSpot, x64)
+- Build: Maven (JMH 1.37 via dependencies)
 
-The workload is compute-bound: each worker thread computes Euler's totient values over a sub‑range and **aggregates locally** before a **single** update to the shared counter. This isolates synchronization overhead from business logic and makes results interpretable.
-
-> Paper-friendly takeaway (from our latest run): LongAdder consistently outperforms AtomicLong once concurrency rises (≈5–16% gains depending on workload), while `ReentrantLock` matches or slightly exceeds LongAdder under this batched-aggregation pattern. `synchronized` scales the worst. As per‑operation work increases, differences narrow because synchronization becomes a smaller fraction of total time.
-
----
-
-## Project layout
-```
-src/main/java/com/jake/sharedmemory/
-  ├── Totient.java                  # GCD + Euler's totient
-  └── TotientSumBenchmark.java      # @Benchmark methods for the four mechanisms
-```
-
-## Environment
-- Java **JDK 17+** recommended
-- Maven 3.8+
-- Linux / macOS / WSL (results above collected on WSL)
-- Run on AC power / performance mode to avoid down-clocking
-
-## How it works (design)
-- Parameter grid:
-  - `upper ∈ {1000, 5000, 10000}` — per-thread compute workload
-  - `threadCount ∈ {1, 2, 4, 8, 16, 32}` — number of worker threads **spawned inside the benchmark** (we do **not** use `-t`)
-- Each benchmark method calls a shared `runWorkers(Accumulator)` that:
-  1) partitions `[1..upper]` into `threadCount` chunks;
-  2) spawns `threadCount` Java threads;
-  3) each thread aggregates locally; and
-  4) combines once via the provided mechanism (sync/lock/atomic/adder).
+> Tip: verify toolchain with `java -version` and `mvn -v`. Using JDK 21 is recommended (JDK 17+ likely works but is not guaranteed).
 
 ## Build
 ```bash
 mvn -q -DskipTests clean package
+# Jar: target/JavaSharedMemoryConcurrencyBenchmark-1.0-SNAPSHOT.jar
 ```
 
-If your build produces a fat-jar named like `target/JavaSharedMemoryConcurrencyBenchmark-1.0-SNAPSHOT.jar`, use it below. Otherwise, list the artifact to confirm:
+## Run benchmarks
+
+### A) Throughput (ops/s) — small `upper`
 ```bash
-ls target/*benchmarks*.jar || ls target/*.jar
+java -jar target/JavaSharedMemoryConcurrencyBenchmark-1.0-SNAPSHOT.jar '.*TotientSumBenchmark\.(testAtomicLong|testLongAdder|testReentrantLock|testSynchronized)$' -wi 5 -i 25 -f 2 -tu s -p upper=1000,5000,10000 -p threadCount=1,2,4,8,16,32 -rf csv -rff results_4way_f5_i8.csv -foe true -to 20m
 ```
 
-## Run (recommended settings)
-**Full sweep (4 methods × 3 uppers × 6 thread counts):**
+### B) Runtime (ms/op) — large `upper`
+> Only run the `_Avgt` methods; set worker threads via `-p threadCount=...`.
+
+**upper = 50k**
 ```bash
-java -jar target/JavaSharedMemoryConcurrencyBenchmark-1.0-SNAPSHOT.jar   '.*TotientSumBenchmark\.test(Synchronized|ReentrantLock|AtomicLong|LongAdder)$'   -bm thrpt -tu s -f 5 -wi 3 -i 8   -p upper=1000,5000,10000 -p threadCount=1,2,4,8,16,32   -rf csv -rff results_4way_f5_i8.csv
+java -jar target/JavaSharedMemoryConcurrencyBenchmark-1.0-SNAPSHOT.jar '.*TotientSumBenchmark.*_Avgt$' -wi 2 -w 1s -i 5 -r 1s -f 2 -tu ms -p upper=50000 -p threadCount=4,8,16,32 -rf csv -rff results_avgt_50k_formal.csv -foe true -to 20m
 ```
-- `-bm thrpt` — throughput (ops/s)
-- `-tu s` — seconds
-- `-f 5` — JVM forks (fresh JVM per run; improves stability)
-- `-wi 3`, `-i 8` — warmup/measurement iterations (balanced runtime vs. variance)
-- We filter by regex to **only** run the four new methods.
 
-## Output
-JMH writes a CSV with columns like:
-- `Benchmark` (`...testAtomicLong`, `...testLongAdder`, etc.)
-- `Param: threadCount`, `Param: upper`
-- `Score` (ops/s), `Score Error (99.9%)`
-- `Threads` will show **1** because concurrency is created **inside** the benchmark.
+**T = 1 baseline for 50k (for speedup)**
+```bash
+java -jar target/JavaSharedMemoryConcurrencyBenchmark-1.0-SNAPSHOT.jar '.*TotientSumBenchmark.*_Avgt$' -wi 0 -i 1 -r 200ms -f 1 -tu ms -p upper=50000 -p threadCount=1 -rf csv -rff results_avgt_50k_T1_baseline.csv -foe true -to 5m
+```
 
-Row count for the full sweep: `4 × 3 × 6 = 72` rows.
+**upper = 100k**
+```bash
+java -jar target/JavaSharedMemoryConcurrencyBenchmark-1.0-SNAPSHOT.jar '.*TotientSumBenchmark.*_Avgt$' -wi 2 -w 1s -i 5 -r 2s -f 2 -tu ms -p upper=100000 -p threadCount=4,8,16,32 -rf csv -rff results_avgt_100k_formal.csv -foe true -to 30m
+```
 
-## Reproducibility notes
-- Fix CPU governor / power mode, close heavy background tasks.
-- Keep the same JDK, `-f/-wi/-i` values across runs for comparability.
-- For key plots in a paper, consider re‑running those points with `-f 5 -i 12` to reduce variance further.
+## Datasets (CSV, repo root)
+- results_4way_f5_i8.csv
+- results_avgt_50k_formal.csv
+- results_avgt_50k_T1_baseline.csv
+- results_avgt_100k_formal.csv
 
-## Citation
-If you use this code or results in publications, please cite this repository.
+## Figures (PNG, under `figures/`)
+- figures/runtime_50k_zoom.png
+- figures/runtime_100k_zoom.png
+- figures/speedup_50k_simple.png
+- figures/speedup_100k_T4_simple.png
+- figures/throughput_upper_1000.png
+- figures/throughput_upper_5000.png
+- figures/throughput_upper_10000.png
 
----
-
-### Maintainer
-- Zihui Jin
-- GitHub: https://github.com/rorschachooo/JavaSharedMemoryConcurrencyBenchmark
+## Notes
+- Control threads with `-p threadCount=...` (do **not** use `-t` in this design).
+- Use `-foe true` and `-to` to avoid hangs on very slow combinations.
+- For extremely large `upper` (e.g., 500k+), consider `-bm ss` (SingleShot).

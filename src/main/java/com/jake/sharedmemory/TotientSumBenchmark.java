@@ -117,4 +117,52 @@ public class TotientSumBenchmark {
     private interface Accumulator {
         void add(long delta);
     }
+    
+    // ===== AverageTime (runtime, ms/op) variants for large `upper` =====
+    // Method-level annotations override the class-level Throughput settings.
+    // We reuse the same fields `upper` and `threadCount` (@Param) and the same runWorkers() helper.
+
+    @Benchmark
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    public long testSynchronized_Avgt() {
+        final Object lock = new Object();
+        final long[] sum = new long[1];
+        runWorkers(delta -> {
+            synchronized (lock) { sum[0] += delta; }
+        });
+        return sum[0];
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    public long testReentrantLock_Avgt() {
+        final ReentrantLock lock = new ReentrantLock(); // non-fair
+        final long[] sum = new long[1];
+        runWorkers(delta -> {
+            lock.lock();
+            try { sum[0] += delta; } finally { lock.unlock(); }
+        });
+        return sum[0];
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    public long testAtomicLong_Avgt() {
+        final AtomicLong sum = new AtomicLong(0L);
+        runWorkers(sum::addAndGet);
+        return sum.get();
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.AverageTime)
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    public long testLongAdder_Avgt() {
+        final LongAdder adder = new LongAdder();
+        runWorkers(adder::add);
+        return adder.sum();
+    }
+
 }

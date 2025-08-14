@@ -1,0 +1,17 @@
+"Benchmark","Mode","Threads","Samples","Score","Score Error (99.9%)","Unit","Param: threadCount","Param: upper"
+"com.jake.sharedmemory.TotientSumBenchmark.testAtomicLong_Avgt","avgt",1,10,79407.191118,889.854393,"ms/op",4,100000
+"com.jake.sharedmemory.TotientSumBenchmark.testAtomicLong_Avgt","avgt",1,10,43709.836673,185.135405,"ms/op",8,100000
+"com.jake.sharedmemory.TotientSumBenchmark.testAtomicLong_Avgt","avgt",1,10,24250.674246,137.003465,"ms/op",16,100000
+"com.jake.sharedmemory.TotientSumBenchmark.testAtomicLong_Avgt","avgt",1,10,14066.253381,318.596214,"ms/op",32,100000
+"com.jake.sharedmemory.TotientSumBenchmark.testLongAdder_Avgt","avgt",1,10,79141.705146,201.896333,"ms/op",4,100000
+"com.jake.sharedmemory.TotientSumBenchmark.testLongAdder_Avgt","avgt",1,10,43831.206561,203.766885,"ms/op",8,100000
+"com.jake.sharedmemory.TotientSumBenchmark.testLongAdder_Avgt","avgt",1,10,24259.358970,175.916549,"ms/op",16,100000
+"com.jake.sharedmemory.TotientSumBenchmark.testLongAdder_Avgt","avgt",1,10,14031.314240,247.651513,"ms/op",32,100000
+"com.jake.sharedmemory.TotientSumBenchmark.testReentrantLock_Avgt","avgt",1,10,79405.788907,284.917235,"ms/op",4,100000
+"com.jake.sharedmemory.TotientSumBenchmark.testReentrantLock_Avgt","avgt",1,10,43861.887083,194.740382,"ms/op",8,100000
+"com.jake.sharedmemory.TotientSumBenchmark.testReentrantLock_Avgt","avgt",1,10,24198.453636,210.924411,"ms/op",16,100000
+"com.jake.sharedmemory.TotientSumBenchmark.testReentrantLock_Avgt","avgt",1,10,14105.334580,411.557734,"ms/op",32,100000
+"com.jake.sharedmemory.TotientSumBenchmark.testSynchronized_Avgt","avgt",1,10,78983.259181,282.042729,"ms/op",4,100000
+"com.jake.sharedmemory.TotientSumBenchmark.testSynchronized_Avgt","avgt",1,10,43581.365428,130.309999,"ms/op",8,100000
+"com.jake.sharedmemory.TotientSumBenchmark.testSynchronized_Avgt","avgt",1,10,24089.937630,127.642777,"ms/op",16,100000
+"com.jake.sharedmemory.TotientSumBenchmark.testSynchronized_Avgt","avgt",1,10,14151.291973,197.063756,"ms/op",32,100000

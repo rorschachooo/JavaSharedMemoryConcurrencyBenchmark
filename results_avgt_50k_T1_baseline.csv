@@ -1,0 +1,5 @@
+"Benchmark","Mode","Threads","Samples","Score","Score Error (99.9%)","Unit","Param: threadCount","Param: upper"
+"com.jake.sharedmemory.TotientSumBenchmark.testAtomicLong_Avgt","avgt",1,1,39808.152868,NaN,"ms/op",1,50000
+"com.jake.sharedmemory.TotientSumBenchmark.testLongAdder_Avgt","avgt",1,1,40003.646811,NaN,"ms/op",1,50000
+"com.jake.sharedmemory.TotientSumBenchmark.testReentrantLock_Avgt","avgt",1,1,39766.720327,NaN,"ms/op",1,50000
+"com.jake.sharedmemory.TotientSumBenchmark.testSynchronized_Avgt","avgt",1,1,39652.389917,NaN,"ms/op",1,50000
