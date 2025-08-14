@@ -3,7 +3,7 @@
 CPU-bound shared-memory synchronization benchmarks using the sum of Euler’s totient over `[1..upper]`.
 We report two views: **Throughput (ops/s)** for small `upper` and **Runtime (ms/op)** for large `upper`.
 
-## Environment (tested)
+## Environment
 - OS: Windows 11 24H2 (WSL2: Ubuntu 24.04.2 LTS)
 - JDK: OpenJDK 21.0.8+9 (HotSpot, x64)
 - Build: Maven (JMH 1.37 via dependencies)
